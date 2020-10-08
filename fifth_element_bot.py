@@ -20,7 +20,7 @@ if __name__ == '__main__':
             port=Config.PORT,
             url_path=Config.BOT_TOKEN
         )
-        updater.setWebhook(Config.APP_URL+Config.BOT_TOKEN)
+        updater.bot.set_webhook(Config.APP_URL+Config.BOT_TOKEN)
 
     else:
         updater.start_polling()
