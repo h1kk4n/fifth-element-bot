@@ -9,13 +9,13 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 if __name__ == '__main__':
-    updater.send_message(
+    updater.bot.send_message(
         chat_id=Config.TG_OWNER_ID,
         text='Welcome'
     )
 
     if Config.APP_URL:
-        updater.bot.start_webhook(
+        updater.start_webhook(
             listen='0.0.0.0',
             port=Config.PORT,
             url_path=Config.BOT_TOKEN
