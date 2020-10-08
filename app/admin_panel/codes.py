@@ -2,12 +2,37 @@ from telegram.ext import CommandHandler, ConversationHandler, MessageHandler
 from telegram.ext import Filters
 
 from config import Config
-from app.database.db import Session
-from app.database.models import Code
+from app.database.db import Session, engine
+from app.database.models import Code, Base
 from app import dp
 
 
 CODE_ADD_VALUE, CODE_ADD_COST, CODE_REMOVE_ID = range(3)
+
+
+# View codes
+def view_codes(update, context):
+    session = Session()
+
+    codes = session.query(Code).all()
+
+    codes_list = '<b><i>Список действительных кодов</i></b>:\n' + '\n'.join(str(code) for code in codes)
+
+    context.bot.send_message(
+        chat_id=update.message.chat_id,
+        text=codes_list
+    )
+
+
+# Delete all codes
+def drop_codes(update, context):
+    Base.metadata.tables['codes'].drop(bind=engine)
+    Base.metadata.tables['codes'].create(bind=engine)
+
+    context.bot.send_message(
+        chat_id=update.message.chat_id,
+        text='Таблица кодов сброшена'
+    )
 
 
 # Add code
@@ -95,6 +120,8 @@ dp.add_handler(ConversationHandler(
     },
     fallbacks=[]
 ))
+dp.add_handler(CommandHandler='viewcodes', callback=view_codes)
+dp.add_handler(CommandHandler='dropcodes', callback=drop_codes)
 
 
 if __name__ == '__main__':

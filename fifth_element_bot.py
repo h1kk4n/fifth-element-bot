@@ -9,7 +9,7 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 if __name__ == '__main__':
-    updater.bot.send_message(
+    updater.send_message(
         chat_id=Config.TG_OWNER_ID,
         text='Welcome'
     )
