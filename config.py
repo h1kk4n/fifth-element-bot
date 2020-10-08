@@ -12,5 +12,7 @@ class Config:
     BOT_TOKEN = os.environ.get('BOT_TOKEN', None)
     TG_OWNER_ID = int(os.environ.get('TG_OWNER_ID', None))
 
+    DATABASE_URL = os.environ.get('DATABASE_URL', None).replace('postgres', 'postgres+psycopg2')
+
     APP_URL = os.environ.get('APP_URL', None)
     PORT = int(os.environ.get('PORT', 5000))
