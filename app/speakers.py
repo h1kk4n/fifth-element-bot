@@ -2,7 +2,6 @@ from telegram.ext import CommandHandler, CallbackQueryHandler
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 from app import dp
-from app.admin_panel.permissions import check_auth
 from app.database.models import Speaker
 from app.database.db import Session
 
@@ -16,7 +15,7 @@ speakers_buttons = {
 def exact_speaker(update, context):
     session = Session()
     query = update.callback_query
-    chat_id = query.message.chat_id,
+    chat_id = query.message.chat_id
     message_id = query.message.message_id
 
     speaker_id = int(query.data.replace(speakers_buttons['show'], ''))
@@ -42,8 +41,6 @@ def show_speakers(update, context):
     session.close()
 
     query = update.callback_query
-    if query is not None:
-        update = query
 
     speakers_keyboard = InlineKeyboardMarkup(
         [
@@ -54,11 +51,19 @@ def show_speakers(update, context):
         ]
     )
 
-    context.bot.send_message(
-        chat_id=update.message.chat_id,
-        text='Список спикеров',
-        reply_markup=speakers_keyboard
-    )
+    if query is  None:
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text='Список спикеров',
+            reply_markup=speakers_keyboard
+        )
+    else:
+        context.bot.edit_message_text(
+            chat_id=query.message.chat_id,
+            message_id=query.message.message_id,
+            text='<b><i>Список спикеров</i></b>',
+            reply_markup=speakers_keyboard
+        )
 
 
 dp.add_handler(CommandHandler(command='speakers', callback=show_speakers))

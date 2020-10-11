@@ -1,5 +1,5 @@
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy import Column, Integer, String, Boolean
+from sqlalchemy import Column, Integer, String
 
 Base = declarative_base()
 
@@ -17,11 +17,13 @@ class Code(Base):
 class Speaker(Base):
     __tablename__ = 'speakers'
     id = Column(Integer, primary_key=True)
+    surname = Column(String)
     name = Column(String)
+    patronymic = Column(String)
     description = Column(String)
 
     def __repr__(self):
-        return f"<b>{self.name}</b>\n\n" \
+        return f"<b><i>{self.name}</i></b>\n\n" \
                f"{self.description}"
 
 
@@ -38,8 +40,3 @@ class User(Base):
     def __repr__(self):
         return f"Вы <b>{self.surname} {self.name}</b>>\n" \
                f"У вас {self.score} очков"
-
-
-class Moderators(Base):
-    __tablename__ = 'moderators'
-    tg_chat_id = Column(Integer, primary_key=True)

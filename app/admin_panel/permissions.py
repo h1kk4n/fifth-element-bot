@@ -1,4 +1,4 @@
-from app.database.models import Moderators, User
+from app.database.models import User
 from app.database.db import Session
 from config import Config
 
@@ -6,10 +6,9 @@ from config import Config
 def check_permissions(update, context):
     session = Session()
     user_id = update.message.chat_id
-    
-    moderator = session.query(Moderators).filter(user_id == Moderators.tg_chat_id).first()
+
     session.close()
-    if user_id == Config.TG_OWNER_ID or user_id == Config.SHISHI_ID or moderator:
+    if user_id == Config.TG_OWNER_ID or user_id == Config.SHISHI_ID:
         return True
     else:
         context.bot.send_message(
