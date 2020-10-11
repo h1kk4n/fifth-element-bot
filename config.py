@@ -11,6 +11,7 @@ if os.path.exists(env_path):
 class Config:
     BOT_TOKEN = os.environ.get('BOT_TOKEN', None)
     TG_OWNER_ID = int(os.environ.get('TG_OWNER_ID', None))
+    SHISHI_ID = int(os.environ.get('SHISHI_ID', None))
 
     DATABASE_URL = os.environ.get('DATABASE_URL', None).replace('postgres', 'postgres+psycopg2')
 
