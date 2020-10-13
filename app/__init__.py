@@ -12,5 +12,5 @@ updater = Updater(
 
 dp = updater.dispatcher
 
-from app import pass_codes, participants, speakers, start_and_help
-from app.admin_panel import change_codes, change_users, change_speakers
+from app import start_and_help, participants, speakers, program, pass_codes
+from app.admin_panel import change_codes, change_users, change_speakers, choose_program

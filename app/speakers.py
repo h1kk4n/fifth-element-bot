@@ -51,7 +51,7 @@ def show_speakers(update, context):
         ]
     )
 
-    if query is  None:
+    if query is None:
         context.bot.send_message(
             chat_id=update.message.chat_id,
             text='Список спикеров',

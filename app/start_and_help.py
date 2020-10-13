@@ -32,16 +32,19 @@ def show_start_or_help(update, context):
 /adduser - участника
 /addspeaker - спикера
 /addprogram - день программы
+
 Удалить:
 /delcode - код
 /deluser - участника
 /delspeaker - спикера
 /delprogram - день программы
+
 Просмотреть:
 /viewcodes - список кодов
 /viewusers - список участников
 /viewspeakers - список спикеров
 /viewprogram - существующие дни программы
+
 Сбросить полностью таблицу
 /dropcodes - кодов
 /dropusers - участников

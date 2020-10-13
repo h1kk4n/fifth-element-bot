@@ -65,25 +65,28 @@ def code_add_done(update, context):
     session = Session()
     try:
         context.user_data['cost'] = int(update.message.text)
+        code_id = 1
+        try:
+            code_id = session.query(Code).order_by(Code.id.desc()).first().id + 1
+        except:
+            code_id = session.query(Code).count() + 1
+        finally:
+            code = Code(
+                id=code_id,
+                value=context.user_data.get('value', None),
+                cost=context.user_data.get('cost', None)
+            )
 
-        rows = session.query(Code).count()
+            context.user_data.pop('value', None)
+            context.user_data.pop('cost', None)
 
-        code = Code(
-            id=rows + 1,
-            value=context.user_data.get('value', None),
-            cost=context.user_data.get('cost', None)
-        )
+            session.add(code)
+            session.commit()
 
-        context.user_data.pop('value', None)
-        context.user_data.pop('cost', None)
-
-        session.add(code)
-        session.commit()
-
-        context.bot.send_message(
-            chat_id=update.message.chat_id,
-            text='Код добавлен'
-        )
+            context.bot.send_message(
+                chat_id=update.message.chat_id,
+                text='Код добавлен'
+            )
     except ValueError:
         context.bot.send_message(
             chat_id=update.message.chat_id,
@@ -112,7 +115,7 @@ def code_remove_id(update, context):
     try:
         code_id = int(update.message.text)
 
-        code = session.query(Code).filter(Code.id == code_id).first()
+        code = session.query(Code).order_by(Code.id == code_id).first().id + 1
 
         if code:
             session.delete(code)

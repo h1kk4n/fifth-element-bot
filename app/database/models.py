@@ -38,5 +38,16 @@ class User(Base):
     auth_code = Column(String)
 
     def __repr__(self):
-        return f"Вы <b>{self.surname} {self.name}</b>>\n" \
+        return f"Вы <b>{self.surname} {self.name}</b>\n" \
                f"У вас {self.score} очков"
+
+
+class Program(Base):
+    __tablename__ = 'program'
+    id = Column(Integer, primary_key=True)
+    title = Column(String)
+    description = Column(String)
+
+    def __repr__(self):
+        return f"<b><i>{self.title}</i></b>\n\n" \
+               f"{self.description}"

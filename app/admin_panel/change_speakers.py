@@ -72,28 +72,32 @@ def speaker_add_description(update, context):
 
 def speaker_add_complete(update, context):
     session = Session()
+    speaker_id = 1
+    try:
+        speaker_id = session.query(Speaker).order_by(Speaker.id.desc()).first().id + 1
+    except:
+        speaker_id = session.query(Speaker).count() + 1
+    finally:
+        surname = context.user_data['surname']
+        name = context.user_data['name']
+        patronymic = context.user_data['patronymic']
+        description = update.message.text
 
-    speaker_id = session.query(Speaker).count() + 1
-    surname = context.user_data['surname']
-    name = context.user_data['name']
-    patronymic = context.user_data['patronymic']
-    description = update.message.text
+        speaker = Speaker(
+            id=speaker_id,
+            surname=surname,
+            name=name,
+            patronymic=patronymic,
+            description=description
+        )
 
-    speaker = Speaker(
-        id=speaker_id,
-        surname=surname,
-        name=name,
-        patronymic=patronymic,
-        description=description
-    )
+        session.add(speaker)
+        session.commit()
 
-    session.add(speaker)
-    session.commit()
-
-    context.bot.send_message(
-        chat_id=update.message.chat_id,
-        text='Спикер добавлен'
-    )
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text='Спикер добавлен'
+        )
 
     session.close()
     del context.user_data['surname']

@@ -70,26 +70,30 @@ def user_add_complete(update, context):
         return USER_ADD
     else:
         session = Session()
-        user_id = session.query(User).count() + 1
+        user_id = 1
+        try:
+            user_id = session.query(User).order_by(User.id.desc()).first().id + 1
+        except:
+            user_id = session.query(User).count() + 1
+        finally:
+            user = User(
+                id=user_id,
+                surname=surname,
+                name=name,
+                patronymic=patronymic,
+                auth_code=make_auth_code()
+            )
+            session.add(user)
+            session.commit()
 
-        user = User(
-            id=user_id,
-            surname=surname,
-            name=name,
-            patronymic=patronymic,
-            auth_code=make_auth_code()
-        )
-        session.add(user)
-        session.commit()
+            bot_message = f"Добавлен пользователь {user.surname} {user.name}.\nКод для аутентификации - {user.auth_code}"
 
-        bot_message = f"Добавлен пользователь {user.surname} {user.name}.\nКод для аутентификации - {user.auth_code}"
-
-        context.bot.send_message(
-            chat_id=update.message.chat_id,
-            text=bot_message
-        )
-        session.close()
-        return ConversationHandler.END
+            context.bot.send_message(
+                chat_id=update.message.chat_id,
+                text=bot_message
+            )
+            session.close()
+            return ConversationHandler.END
 
 
 # Remove user
@@ -146,49 +150,3 @@ dp.add_handler(ConversationHandler(
     },
     fallbacks=[]
 ))
-
-if __name__ == '__main__':
- """   session = Session()
-    users = '''Волошина Полина Андреевна
-Бакеева Полина Евгеньевна
-Максимова Мария Игоревна
-Кияненко Елизавета Александровна
-Реутин Антон Викторович
-Машкова Алисия Валерьевна
-Петренко Елизавета Владимировна
-Соломатина Аксинья Сергеевна
-Панченко Даниил Александрович
-Головань Владимир Олегович
-Папкова Анастасия Сергеевна
-Терещенко Екатерина Александовна
-Хаценко Елена Александровна
-Татаренко Александр Олегович
-Соколова Юлия Андреевна
-Абрамова Анастаия Евгеньевна
-Годунова Алина Сергеевна
-Абраменко Дмитрий Дмитриевич
-Долбня лександр Алексндрович
-Цыцура Дарина Игоревна
-Королев Илья Андреевич
-Татюк Алина Сергеевна
-Широкая Екатерина Витальевна
-Гортунова Виктория Александровна
-Дуброва Дарья Евгеньевна
-Ефимако Анастасия Андреевна
-Tangyan Lendrush Sosovich
-Елистратов Алексей Владимирович
-Гурченко Екатерина .
-Минина Мария .'''.split('\n')
-    for some in users:
-        user_id_ = session.query(User).count() + 1
-        surname, name, patr = some.split()
-        user = User(
-            id=user_id_,
-            surname=surname,
-            name=name,
-            patronymic=patr,
-            auth_code=make_auth_code()
-        )
-        session.add(user)
-    session.commit()
-    session.close()"""
