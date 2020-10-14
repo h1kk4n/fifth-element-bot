@@ -23,7 +23,7 @@ class Speaker(Base):
     description = Column(String)
 
     def __repr__(self):
-        return f"<b><i>{self.name}</i></b>\n\n" \
+        return f"<b><i>{self.surname} {self.name} {self.patronymic}</i></b>\n\n" \
                f"{self.description}"
 
 

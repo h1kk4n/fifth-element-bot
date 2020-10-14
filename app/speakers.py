@@ -45,7 +45,7 @@ def show_speakers(update, context):
     speakers_keyboard = InlineKeyboardMarkup(
         [
             [InlineKeyboardButton(
-                text=speaker.name,
+                text=f"{speaker.surname} {speaker.name} {speaker.patronymic}",
                 callback_data=f'{speakers_buttons["show"]} {speaker.id}')
              ] for speaker in speakers
         ]
