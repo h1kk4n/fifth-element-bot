@@ -5,9 +5,10 @@ from app import dp
 from app.database.models import User
 from app.database.db import Session
 from app.admin_panel.permissions import check_auth
+from config import Config
 
 
-AUTH_CODE = 1
+AUTH_CODE, IDEA = range(2)
 
 
 def auth_start(update, context):
@@ -49,25 +50,46 @@ def show_profile(update, context):
         )
 
 
-def show_all_participants(update, context):
+def idea_start(update, context):
+    if check_auth(update, context):
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text='Введите вашу идею для проекта'
+        )
+        return IDEA
+    else:
+        return ConversationHandler.END
+
+
+def idea_complete(update, context):
     session = Session()
-    users = session.query(User).all()
-    users_list = '<b><i>Список участников</i></b>:\n' + '\n'.join(
-        f"№{user.id} {user.surname} {user.name} {user.patronymic} - {user.score} PTS" for user in users
+
+    user = session.query(User).filter(User.tg_chat_id == update.message.chat_id).first()
+
+    bot_message = f"{user.name} {user.surname} пишет:\n\n"
+    idea_text = update.message.text
+
+    bot_message += idea_text
+    context.bot.send_message(
+        chat_id=Config.SHISHI_ID,
+        text=bot_message
     )
     context.bot.send_message(
         chat_id=update.message.chat_id,
-        text=users_list
+        text='Отличное начало!\nУдачи в работе'
     )
-    session.close()
+    return ConversationHandler.END
 
 
 dp.add_handler(ConversationHandler(
-    entry_points=[CommandHandler(command='login', callback=auth_start)],
+    entry_points=[
+        CommandHandler(command='login', callback=auth_start),
+        CommandHandler(command='idea', callback=idea_start)
+    ],
     states={
-        AUTH_CODE: [MessageHandler(filters=Filters.text, callback=auth_complete)]
+        AUTH_CODE: [MessageHandler(filters=Filters.text, callback=auth_complete)],
+        IDEA: [MessageHandler(filters=Filters.text, callback=idea_complete)]
     },
     fallbacks=[]
 ))
 dp.add_handler(CommandHandler(command='profile', callback=show_profile))
-dp.add_handler(CommandHandler(command='score', callback=show_all_participants))

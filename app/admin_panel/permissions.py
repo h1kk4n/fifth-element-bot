@@ -1,6 +1,12 @@
+from telegram.ext import MessageHandler, ConversationHandler, CommandHandler
+from telegram.ext import Filters
+
+from app import dp
 from app.database.models import User
 from app.database.db import Session
 from config import Config
+
+SEND_ALL = range(1)
 
 
 def check_permissions(update, context):
@@ -33,3 +39,45 @@ def check_auth(update, context):
             text='Вы не авторизованный пользователь'
         )
         return False
+
+
+def send_all_message(update, context):
+    if check_permissions(update, context):
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text='Введите текст рассылки'
+        )
+        return SEND_ALL
+    else:
+        return ConversationHandler.END
+
+
+def send_all(update, context):
+    session = Session()
+
+    bot_message = update.message.text
+    users = session.query(User).all()
+
+    for user in users:
+        if user.tg_chat_id:
+            context.bot.send_message(
+                chat_id=user.tg_chat_id,
+                text=bot_message
+            )
+
+    context.bot.send_message(
+        chat_id=update.message.chat_id,
+        text='Сообщение отправлено всем авторизованным участникам'
+    )
+
+    session.close()
+    return ConversationHandler.END
+
+
+dp.add_handler(ConversationHandler(
+    entry_points=[CommandHandler(command='sendall', callback=send_all_message)],
+    states={
+        SEND_ALL: [MessageHandler(filters=Filters.text, callback=send_all)]
+    },
+    fallbacks=[]
+))

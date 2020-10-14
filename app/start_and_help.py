@@ -7,12 +7,12 @@ from config import Config
 
 
 def show_start_or_help(update, context):
-    bot_message = """Привет\n
+    bot_message = """Ты готов найти свой пятый элемент?
+Введи соответствующую команду из списка, чтобы получить нужную информацию.\n
 /help - Вот это же сообщение
 /login - Авторизация для участников
 /speakers - Посмотреть спикеров
-/program - Информация о программах на разные дни
-/score - Общий счет\n
+/program - Информация о программах на разные дни\n
 """
 
     session = Session()
@@ -23,7 +23,8 @@ def show_start_or_help(update, context):
     if user:
         bot_message += """<i>Для участников</i>:
 /profile - Личный счет
-/code - Сдать код\n
+/code - Сдать код
+/idea - Предложить идею для проекта\n
 """
     if user_id == Config.TG_OWNER_ID or user_id == Config.SHISHI_ID:
         bot_message += """<b><i>Админ-панель</i></b>:
@@ -49,7 +50,12 @@ def show_start_or_help(update, context):
 /dropcodes - кодов
 /dropusers - участников
 /dropspeakers - спикеров
-/dropprogram - программы"""
+/dropprogram - программы
+
+/sendall - отправить сообщение всем участникам\n
+"""
+
+    bot_message += 'Удачи!'
 
     context.bot.send_message(
         chat_id=user_id,
