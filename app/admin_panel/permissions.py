@@ -74,6 +74,22 @@ def send_all(update, context):
     return ConversationHandler.END
 
 
+def show_score(update, context):
+    if check_permissions(update, context):
+        session = Session()
+        users = session.query(User).all()
+
+        bot_message = '<b><i>Общий счет</i></b>\n\n-' + '\n-'.join(
+            f"{user.surname} {user.name} {user.patronymic} - {user.score} PTS"
+            for user in users
+        )
+        context.bot.send_message(
+            chat_id=update.message.chat_id,
+            text=bot_message
+        )
+
+
+dp.add_handler(CommandHandler(command='score', callback=show_score))
 dp.add_handler(ConversationHandler(
     entry_points=[CommandHandler(command='sendall', callback=send_all_message)],
     states={

@@ -1,7 +1,6 @@
 from telegram.ext import CommandHandler, ConversationHandler, MessageHandler
 from telegram.ext import Filters
 
-from config import Config
 from app.database.db import Session, engine
 from app.database.models import Code, Base
 from app.admin_panel.permissions import check_permissions
@@ -115,16 +114,15 @@ def code_remove_id(update, context):
     try:
         code_id = int(update.message.text)
 
-        code = session.query(Code).order_by(Code.id == code_id).first().id + 1
+        code = session.query(Code).order_by(Code.id == code_id).first()
 
         if code:
-            session.delete(code)
-            session.commit()
-
             context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text='Код удален'
             )
+            session.delete(code)
+            session.commit()
         else:
             context.bot.send_message(
                 chat_id=update.message.chat_id,
