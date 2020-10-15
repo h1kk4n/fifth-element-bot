@@ -22,13 +22,13 @@ def pass_code(update, context):
         session.query(User).filter(user_id == User.tg_chat_id).update({User.score: User.score + code.cost})
         session.commit()
 
-        bot_message = f"На ваш счёт зачислено {code.cost} баллов"
-        if code.cost == 3:
-            bot_message += f"На ваш счёт зачислено {code.cost} баллов, так держать!"
-        if code.cost == 3:
-            bot_message += f"На ваш счёт зачислено {code.cost} баллов, отличная работа!"
-        if code.cost == 3:
-            bot_message += f"На ваш счёт зачислено {code.cost} баллов. Вы сегодня в ударе!"
+        bot_message = f"На ваш счёт зачислено {abs(code.cost)} баллов"
+        if abs(code.cost) == 3:
+            bot_message = f"На ваш счёт зачислено {code.cost} баллов, так держать!"
+        if abs(code.cost) == 5:
+            bot_message = f"На ваш счёт зачислено {code.cost} баллов, отличная работа!"
+        if abs(code.cost) == 10:
+            bot_message = f"На ваш счёт зачислено {code.cost} баллов. Вы сегодня в ударе!"
 
         context.bot.send_message(
             chat_id=user_id,
