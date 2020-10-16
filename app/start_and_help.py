@@ -52,6 +52,7 @@ def show_start_or_help(update, context):
 /dropspeakers - спикеров
 /dropprogram - программы
 
+/score - общий счет участников
 /sendall - отправить сообщение всем участникам\n
 """
 
