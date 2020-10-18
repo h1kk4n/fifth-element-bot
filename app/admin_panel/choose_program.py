@@ -29,8 +29,8 @@ def view_program(update, context):
 # Drop program
 def drop_program(update, context):
     if check_permissions(update, context):
-        Base.metadata.tables['program'].drop(engine)
-        Base.metadata.tables['program'].create(engine)
+        Base.metadata.tables['program'].drop(bind=engine)
+        Base.metadata.tables['program'].create(bind=engine)
 
         context.bot.send_message(
             chat_id=update.message.chat_id,

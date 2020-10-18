@@ -114,15 +114,15 @@ def code_remove_id(update, context):
     try:
         code_id = int(update.message.text)
 
-        code = session.query(Code).order_by(Code.id == code_id).first()
+        code = session.query(Code).filter(Code.id == code_id).first()
 
         if code:
+            session.delete(code)
+            session.commit()
             context.bot.send_message(
                 chat_id=update.message.chat_id,
                 text='Код удален'
             )
-            session.delete(code)
-            session.commit()
         else:
             context.bot.send_message(
                 chat_id=update.message.chat_id,
